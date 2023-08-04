@@ -1,8 +1,7 @@
-import React from 'react';
+import { UserButton } from '@clerk/nextjs';
 import { Menu } from 'lucide-react';
 
-import { Button } from '@/components/ui';
-import { UserButton } from '@clerk/nextjs';
+import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
   return (
