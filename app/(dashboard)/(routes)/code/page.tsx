@@ -2,12 +2,11 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { MessageSquare } from 'lucide-react';
+import { Code } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ChatCompletionRequestMessage } from 'openai';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import ReactMarkdown from 'react-markdown';
 import * as z from 'zod';
 
 import { BotAvatar } from '@/components/bot-avatar';
@@ -22,7 +21,7 @@ import { cn } from '@/lib/utils';
 
 import { formSchema } from './form';
 
-const ConversationPage = () => {
+const CodePage = () => {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
@@ -42,7 +41,7 @@ const ConversationPage = () => {
         content: data.prompt,
       };
       const newMessages = [...messages, userMessage];
-      const response = await axios.post('/api/conversation', {
+      const response = await axios.post('/api/code', {
         messages: newMessages,
       });
       setMessages((current) => [...current, userMessage, response.data]);
@@ -57,11 +56,11 @@ const ConversationPage = () => {
   return (
     <>
       <Heading
-        title="Conversation"
-        description="Our most advanced conversation model."
-        icon={MessageSquare}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        title="Code Generation"
+        description="Generate code using descriptive text."
+        icon={Code}
+        iconColor="text-green-700"
+        bgColor="bg-green-700/10"
       />
       <div className="px-4 lg:px-8">
         <Form {...form}>
@@ -77,7 +76,7 @@ const ConversationPage = () => {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="Start a conversation..."
+                      placeholder="Simple toggle button using react hooks."
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading}
                     />
@@ -115,21 +114,7 @@ const ConversationPage = () => {
                 )}
               >
                 {message.role === 'user' ? <UserAvatar /> : <BotAvatar />}
-                <ReactMarkdown
-                  components={{
-                    pre: ({ node, ...props }) => (
-                      <div className="w-full p-2 my-2 overflow-auto rounded-lg bg-black/10">
-                        <pre {...props} />
-                      </div>
-                    ),
-                    code: ({ node, ...props }) => (
-                      <code className="p-1 rounded-lg bg-black/10" {...props} />
-                    ),
-                  }}
-                  className="overflow-hidden text-sm leading-7"
-                >
-                  {message.content || ''}
-                </ReactMarkdown>
+                <p className="text-sm">{message.content}</p>
               </div>
             ))}
           </div>
@@ -139,4 +124,4 @@ const ConversationPage = () => {
   );
 };
 
-export default ConversationPage;
+export default CodePage;
