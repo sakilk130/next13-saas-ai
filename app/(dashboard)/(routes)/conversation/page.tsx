@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { ChatCompletionRequestMessage } from 'openai';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import ReactMarkdown from 'react-markdown';
 import * as z from 'zod';
 
 import { BotAvatar } from '@/components/bot-avatar';
@@ -114,7 +115,21 @@ const ConversationPage = () => {
                 )}
               >
                 {message.role === 'user' ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">{message.content}</p>
+                <ReactMarkdown
+                  components={{
+                    pre: ({ node, ...props }) => (
+                      <div className="w-full p-2 my-2 overflow-auto rounded-lg bg-black/10">
+                        <pre {...props} />
+                      </div>
+                    ),
+                    code: ({ node, ...props }) => (
+                      <code className="p-1 rounded-lg bg-black/10" {...props} />
+                    ),
+                  }}
+                  className="overflow-hidden text-sm leading-7"
+                >
+                  {message.content || ''}
+                </ReactMarkdown>
               </div>
             ))}
           </div>
