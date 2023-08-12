@@ -2,6 +2,7 @@
 
 import { Check, Zap } from 'lucide-react';
 import { useState } from 'react';
+import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +26,10 @@ const ProModal = () => {
 
   const onSubscribe = async () => {
     try {
-      // DO Something
+      setLoading(true);
+      const response = await axios.get('/api/stripe');
+
+      window.location.href = response.data.url;
     } catch (error) {
       toast.error('Something went wrong');
     } finally {
