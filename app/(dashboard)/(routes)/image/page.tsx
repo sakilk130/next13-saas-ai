@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { toast } from 'react-hot-toast';
 
 import { Heading } from '@/components/heading';
 import { Loader } from '@/components/loader';
@@ -23,11 +24,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useProModal } from '@/hooks/use-pro-modal';
 
 import { amountOptions, formSchema, resolutionOptions } from './form';
 
 const ImagePage = () => {
   const router = useRouter();
+  const proModal = useProModal();
   const [photos, setPhotos] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,8 +50,12 @@ const ImagePage = () => {
       const response = await axios.post('/api/image', data);
       const urls = response.data.map((image: { url: string }) => image.url);
       setPhotos(urls);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      } else {
+        toast.error('Something went wrong.');
+      }
     } finally {
       router.refresh();
     }
